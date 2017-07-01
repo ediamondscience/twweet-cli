@@ -3,20 +3,58 @@ import tweepy
 import os
 import csv
 import json
+
+#set up a list of keys from key file
+cfglist = ['' for _ in range(4)] 
+with open('./keys.txt') as f:
+    i=0
+    for line in f:
+        line=line.strip() 
+        cfglist[i]=line
+
 # Twitter API credentials
 cfg = {
-   "consumer_key"        : "",
-   "consumer_secret"     : "",
-   "access_token"        : "",
-   "access_token_secret" : ""
+   "consumer_key"        : cfglist[0],
+   "consumer_secret"     : cfglist[1],
+   "access_token"        : cfglist[2],
+   "access_token_secret" : cfglist[3]
    }
+
 db = './TwtApi.db'
+
+def get_user_keys():
+    #get keys from user input 
+    cons_key = raw_input("Please enter your consumer key: ")
+    cons_sec = raw_input("Please enter your consumer secret: ")
+    acc_token = raw_input("Please enter your access token: ")
+    acc_token_sec = raw_input("Please enter your access token secret: ")
+
+    #reset dict values for cfg
+    cfg = {
+       "consumer_key"        : cons_key,
+       "consumer_secret"     : cons_sec,
+       "access_token"        : acc_token,
+       "access_token_secret" : acc_token_sec
+       }
+
+    #finally save keys to text file
+    with open('./keys.txt', 'a') as keyfile:
+        keyfile.write(conskey+'\n')
+        keyfile.write(cons_sec+'\n')
+        keyfile.write(acc_token+'\n')
+        keyfile.write(acc_token_sec+'\n') 
 
 def get_api(cfg):
     #Twitter only allows access to a users most recent 3240 tweets with this method
 
-    auth = tweepy.OAuthHandler(cfg['consumer_key'], cfg['consumer_secret'])
-    auth.set_access_token(cfg['access_token'], cfg['access_token_secret'])
+    authenicated=False
+    while authenticated!=True:
+        try:
+            auth = tweepy.OAuthHandler(cfg['consumer_key'], cfg['consumer_secret'])
+            auth.set_access_token(cfg['access_token'], cfg['access_token_secret'])
+            authenticated=True
+        except:
+            get_usr_keys()
     return tweepy.API(auth)
 
 def get_all_tweets(screen_name):
